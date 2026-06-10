@@ -82,7 +82,7 @@ const S: Record<string, React.CSSProperties> = {
 
   /* offerings */
   offerTitle:  { fontFamily: 'Syne, sans-serif', fontSize: 'clamp(2rem,4vw,3rem)', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: '3rem', position: 'relative' as const, display: 'inline-block' },
-  offerRow:    { display: 'grid', gridTemplateColumns: '220px 1fr 40px', alignItems: 'center', gap: '1.5rem', padding: '1.4rem 0.75rem', borderTop: '1px solid #e5e7eb', cursor: 'pointer' },
+  offerRow:    { display: 'grid', gridTemplateColumns: '220px 1fr 40px', alignItems: 'center', gap: '1.5rem', padding: '1.4rem 1.25rem', borderTop: '1px solid #e5e7eb', cursor: 'pointer', borderRadius: '8px', transition: 'background 0.2s' },
   offerTag:    { fontSize: '0.78rem', color: '#9ca3af', lineHeight: 1.6, whiteSpace: 'pre-line' as const },
   offerSvc:    { fontFamily: "'Courier New', monospace", fontSize: 'clamp(1rem,2vw,1.4rem)', fontWeight: 600 },
 
@@ -377,20 +377,22 @@ export default function App() {
 
           {OFFERINGS.map((item, i) => (
             <motion.div key={i}
-              style={{ ...S.offerRow, borderBottom: i === OFFERINGS.length - 1 ? '1px solid #e5e7eb' : undefined }}
+              style={{ ...S.offerRow, borderBottom: i === OFFERINGS.length - 1 ? '1px solid #e5e7eb' : undefined, transition: 'none' }}
               className="offer-row-responsive"
               initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ backgroundColor: '#f9fafb', paddingLeft: '1.25rem', paddingRight: '1.25rem' }}
+              whileHover={{ backgroundColor: '#f9fafb' }}
               onClick={() => setActiveRow(activeRow === i ? null : i)}
             >
               <p style={S.offerTag}>{item.tag}</p>
               <motion.span style={S.offerSvc}
                 animate={{ color: activeRow === i ? '#7c3aed' : '#111827' }}
+                whileHover={{ color: '#7c3aed' }}
                 transition={{ duration: 0.2 }}
               >{item.service}</motion.span>
               <motion.div style={{ display: 'flex', justifyContent: 'flex-end' }}
                 animate={{ x: activeRow === i ? 8 : 0 }}
+                whileHover={{ x: 8 }}
                 transition={{ type: 'spring', stiffness: 380, damping: 24 }}>
                 <ArrowRight size={18} color="#9ca3af" />
               </motion.div>
