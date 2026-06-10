@@ -615,7 +615,7 @@ export default function App() {
               <p style={S.footLink}>info@elementum.com</p>
             </div>
           </div>
-          <p style={S.copyright}>©2025 Elementum. All rights reserved</p>
+          <p style={S.copyright}>©2026 Elementum. All rights reserved</p>
         </div>
       </footer>
 
