@@ -109,6 +109,81 @@ const S: Record<string, React.CSSProperties> = {
 }
 
 /* ── component ───────────────────────────────────────────────────────── */
+
+/* ── OfferRow — isolated hover state per row ─────────────────────────── */
+function OfferRow({
+  item, index, isLast, isActive, onClick
+}: {
+  item: { tag: string; service: string }
+  index: number
+  isLast: boolean
+  isActive: boolean
+  onClick: () => void
+}) {
+  const [hovered, setHovered] = useState(false)
+  const highlighted = hovered || isActive
+
+  return (
+    <motion.div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '220px 1fr 40px',
+        alignItems: 'center',
+        gap: '1.5rem',
+        padding: '1.4rem 1.25rem',
+        borderTop: '1px solid #e5e7eb',
+        borderBottom: isLast ? '1px solid #e5e7eb' : undefined,
+        cursor: 'pointer',
+        borderRadius: '8px',
+        backgroundColor: hovered ? '#f5f3ff' : '#fff',
+        transition: 'background-color 0.2s ease',
+      }}
+      className="offer-row-responsive"
+      initial={{ opacity: 0, x: -40 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      onClick={onClick}
+    >
+      {/* left tag */}
+      <motion.p
+        style={{
+          fontSize: '0.78rem',
+          lineHeight: 1.6,
+          whiteSpace: 'pre-line' as const,
+          color: highlighted ? '#7c3aed' : '#9ca3af',
+          transition: 'color 0.2s ease',
+        }}
+      >{item.tag}</motion.p>
+
+      {/* service name */}
+      <motion.span
+        style={{
+          fontFamily: "'Courier New', monospace",
+          fontSize: 'clamp(1rem,2vw,1.4rem)',
+          fontWeight: 600,
+          color: highlighted ? '#7c3aed' : '#111827',
+          transition: 'color 0.2s ease',
+        }}
+      >{item.service}</motion.span>
+
+      {/* arrow */}
+      <motion.div
+        style={{ display: 'flex', justifyContent: 'flex-end' }}
+        animate={{
+          x: highlighted ? 8 : 0,
+          rotate: highlighted ? -45 : 0,
+        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+      >
+        <ArrowRight size={18} color={highlighted ? '#7c3aed' : '#9ca3af'} />
+      </motion.div>
+    </motion.div>
+  )
+}
+
 export default function App() {
   const [menuOpen,   setMenuOpen]   = useState(false)
   const [scrolled,   setScrolled]   = useState(false)
@@ -376,27 +451,14 @@ export default function App() {
           </FadeUp>
 
           {OFFERINGS.map((item, i) => (
-            <motion.div key={i}
-              style={{ ...S.offerRow, borderBottom: i === OFFERINGS.length - 1 ? '1px solid #e5e7eb' : undefined, transition: 'none' }}
-              className="offer-row-responsive"
-              initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              whileHover={{ backgroundColor: '#f9fafb' }}
+            <OfferRow
+              key={i}
+              item={item}
+              index={i}
+              isLast={i === OFFERINGS.length - 1}
+              isActive={activeRow === i}
               onClick={() => setActiveRow(activeRow === i ? null : i)}
-            >
-              <p style={S.offerTag}>{item.tag}</p>
-              <motion.span style={S.offerSvc}
-                animate={{ color: activeRow === i ? '#7c3aed' : '#111827' }}
-                whileHover={{ color: '#7c3aed' }}
-                transition={{ duration: 0.2 }}
-              >{item.service}</motion.span>
-              <motion.div style={{ display: 'flex', justifyContent: 'flex-end' }}
-                animate={{ x: activeRow === i ? 8 : 0 }}
-                whileHover={{ x: 8 }}
-                transition={{ type: 'spring', stiffness: 380, damping: 24 }}>
-                <ArrowRight size={18} color="#9ca3af" />
-              </motion.div>
-            </motion.div>
+            />
           ))}
         </div>
       </section>
